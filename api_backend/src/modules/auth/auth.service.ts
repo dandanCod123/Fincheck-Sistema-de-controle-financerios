@@ -12,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async autheticate(authencateDto: SignUpDto) {
+  async autheticate(authencateDto: SigninDto) {
     const { email, password } = authencateDto;
     const user = await this.usersRepository.findUnique({
       where: { email },

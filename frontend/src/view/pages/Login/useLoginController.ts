@@ -1,6 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { any, z } from "zod";
+import { httpClient } from "../../../app/services/HttpClient";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { authService } from "../../../app/services/authService";
+import type { SignupParms } from "../../../app/services/authService/signup";
+import type { SigninParms } from "../../../app/services/authService/signin";
+import { useAuth } from "../../../app/hooks/useAuth";
 
 const schema = z.object({
   email: z.string().nonempty("Email é obrigatorio").email(),
@@ -18,10 +25,24 @@ export function useLoginController() {
     resolver: zodResolver(schema),
   });
 
-  const handleSubmit = hookFormHandleSubmit((data) => {
-    console.log("Chama a API com: ", data);
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: async (data: SigninParms) => {
+      return authService.signin(data);
+    },
+  });
+
+  const { signin } = useAuth();
+  const handleSubmit = hookFormHandleSubmit(async (data) => {
+    try {
+      const { acessToken } = await mutateAsync(data);
+      signin(acessToken);
+      toast.success("login feito com sucesso!");
+    } catch {
+      toast.error("Ocorreu um erro ao fazer login!");
+    }
   });
   console.log(errors);
 
-  return { handleSubmit, register, errors };
+  return { handleSubmit, register, errors, isPending };
 }
