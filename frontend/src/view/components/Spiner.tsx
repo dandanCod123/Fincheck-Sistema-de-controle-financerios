@@ -1,4 +1,4 @@
-import { cn } from "../../app/utils/cn"; // ajuste o caminho se necessário
+import { cn } from "../../app/utils/cn";
 
 interface SpinnerProps {
   className?: string;
@@ -14,18 +14,18 @@ export function Spiner({ className }: SpinnerProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <defs>
+        <linearGradient id="spinner-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
+        </linearGradient>
+      </defs>
       <circle
         cx="12"
         cy="12"
         r="10"
-        stroke="currentColor"
-        strokeOpacity="0.2"
-        strokeWidth="4"
-      />
-      <path
-        d="M22 12c0-5.523-4.477-10-10-10"
-        stroke="currentColor"
-        strokeWidth="4"
+        stroke="url(#spinner-gradient)"
+        strokeWidth="3"
         strokeLinecap="round"
       />
     </svg>

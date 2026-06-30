@@ -1,13 +1,29 @@
-import { useAuth } from "../../../app/hooks/useAuth";
-import { Button } from "../../components/Button";
+import logo from "../../../assets/logo.svg";
+
+import { UserMenu } from "../../components/UserMenu";
+import { Accounts } from "./components/Accounts";
+import { DashboardProvider } from "./components/DashBoardContext";
+import { Transactions } from "./components/Transactions";
 
 export function Dasboard() {
-  const { signout } = useAuth();
   return (
-    <div>
-      <h1>DashBoard Page</h1>
+    <DashboardProvider>
+      <div className="h-full w-full p-4 md:px-8 md:pb-8 md:pt-6 flex flex-col overflow-y-auto md:overflow-hidden">
+        <header className="h-12 flex items-center justify-between">
+          <img src={logo} />
+          <UserMenu />
+        </header>
 
-      <Button onClick={signout}>Sair</Button>
-    </div>
+        <main className="flex-1 flex flex-col md:flex-row gap-4 mt-10 min-h-0">
+          <div className="w-full md:w-1/2">
+            <Accounts />
+          </div>
+
+          <div className="w-full md:w-1/2">
+            <Transactions />
+          </div>
+        </main>
+      </div>
+    </DashboardProvider>
   );
 }
