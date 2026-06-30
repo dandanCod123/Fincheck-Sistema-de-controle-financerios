@@ -26,7 +26,7 @@ export function Accounts() {
   } = useAccountsController();
 
   return (
-    <div className="bg-teal-700 rounded-2xl w-full h-full md:p-10 px-4 py-8 flex flex-col">
+    <div className="bg-teal-900 rounded-2xl w-full h-full md:p-10 px-4 py-8 flex flex-col">
       {isLoading && (
         <div className="w-full h-full flex items-center justify-center">
           <Spiner className="text-green-200  w-20 h-20" />
