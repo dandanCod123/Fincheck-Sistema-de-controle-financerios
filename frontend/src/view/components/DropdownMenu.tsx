@@ -7,7 +7,7 @@ function DrodownMenuRoot({ children }: { children: React.ReactNode }) {
 
 function DrodownMenuTrigger({ children }: { children: React.ReactNode }) {
   return (
-    <RdxDropdownMenu.Trigger className="outline-none">
+    <RdxDropdownMenu.Trigger className="outline-none" asChild>
       {children}
     </RdxDropdownMenu.Trigger>
   );
@@ -20,18 +20,16 @@ interface DropdownMenuContentProps {
 
 function DrodownMenuContent({ children, className }: DropdownMenuContentProps) {
   return (
-    <RdxDropdownMenu.Portal>
-      <RdxDropdownMenu.Content
-        className={cn(
-          "rounded-2xl p-2 bg-white space-y-2 shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] z-50",
-          "data-[side=bottom]:animate-slide-up-and-fade ",
-          "data-[side=top]:animate-slide-down-and-fade ",
-          className,
-        )}
-      >
-        {children}
-      </RdxDropdownMenu.Content>
-    </RdxDropdownMenu.Portal>
+    <RdxDropdownMenu.Content
+      className={cn(
+        "rounded-2xl p-2 bg-white space-y-2 shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] z-50",
+        "data-[side=bottom]:animate-slide-up-and-fade",
+        "data-[side=top]:animate-slide-down-and-fade",
+        className,
+      )}
+    >
+      {children}
+    </RdxDropdownMenu.Content>
   );
 }
 

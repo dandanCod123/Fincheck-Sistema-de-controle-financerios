@@ -1,10 +1,13 @@
 import logo from "../../../assets/logo.svg";
+import { Modal } from "../../components/Modal";
 
 import { UserMenu } from "../../components/UserMenu";
 import { Accounts } from "./components/Accounts";
 import { DashboardProvider } from "./components/DashBoardContext";
 import { Fab } from "./components/Fab";
 import { Transactions } from "./components/Transactions";
+import { NewAccountModal } from "./Modals/NewAccountModal";
+import { NewTransactionModal } from "./Modals/NewTransactionModal";
 
 export function Dasboard() {
   return (
@@ -26,6 +29,8 @@ export function Dasboard() {
         </main>
 
         <Fab />
+        <NewAccountModal />
+        <NewTransactionModal />
       </div>
     </DashboardProvider>
   );
