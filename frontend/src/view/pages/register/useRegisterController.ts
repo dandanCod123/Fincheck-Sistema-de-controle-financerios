@@ -32,10 +32,16 @@ export function useRegisterController() {
   });
 
   const { signin } = useAuth();
+
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
-      const { acessToken } = await mutateAsync(data);
-      signin(acessToken);
+      const { accessToken } = await mutateAsync(data); // ✅ dois "c"
+
+      if (!accessToken) {
+        throw new Error("Token não recebido do servidor");
+      }
+
+      signin(accessToken); // ✅ token correto
       toast.success("Conta Criada com sucesso!");
     } catch {
       toast.error("Ocorreu um erro ao criar sua conta!");

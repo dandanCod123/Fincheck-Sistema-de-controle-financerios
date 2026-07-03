@@ -16,6 +16,7 @@ import { Spiner } from "../../../../components/Spiner";
 import emptyStateImage from "../../../../../assets/Empty State.svg";
 import { TransactionTypeDropdown } from "./TransactionTypeDropdown";
 import { FiltersModal } from "./FiltersModal";
+import { formatDate } from "../../../../../app/utils/formatDate";
 
 export function Transactions() {
   const {
@@ -87,52 +88,47 @@ export function Transactions() {
               </div>
             )}
 
+            {/** LISTA DE TRANSAÇÕES CARDS ------------------ */}
+
             {hasTransactions && !isLoading && (
               <>
-                <div className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4">
-                  <div className="flex-1 flex items-center gap-3">
-                    <CategoryIcon type="expense" />
-
-                    <div>
-                      <strong className="font-bold tracking-[-0.5px] block">
-                        Almoço
-                      </strong>
-                      <span className="text-sm text-gray-600">04/06/2023</span>
-                    </div>
-                  </div>
-
-                  <span
-                    className={cn(
-                      "text-red-700 tracking-[-0.5px] font-medium",
-                      !areValuesVisible && "blur-sm",
-                    )}
+                {transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4"
                   >
-                    {formatCurrency(-123)}
-                  </span>
-                </div>
+                    <div className="flex-1 flex items-center gap-3">
+                      <CategoryIcon
+                        type={
+                          transaction.type === "EXPENSE" ? "expense" : "income"
+                        }
+                        category={transaction.category?.icon}
+                      />
 
-                {/**--------------------------- */}
-                <div className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4">
-                  <div className="flex-1 flex items-center gap-3">
-                    <CategoryIcon type="income" />
-
-                    <div>
-                      <strong className="font-bold tracking-[-0.5px] block">
-                        Almoço
-                      </strong>
-                      <span className="text-sm text-gray-600">04/06/2023</span>
+                      <div>
+                        <strong className="font-bold tracking-[-0.5px] block">
+                          {transaction.name}
+                        </strong>
+                        <span className="text-sm text-gray-600">
+                          {formatDate(new Date(transaction.date))}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <span
-                    className={cn(
-                      "text-green-700 tracking-[-0.5px] font-medium",
-                      !areValuesVisible && "blur-sm",
-                    )}
-                  >
-                    {formatCurrency(+123)}
-                  </span>
-                </div>
+                    <span
+                      className={cn(
+                        "text-red-800 font-medium tracking-[-0.5px]",
+                        transaction.type === "EXPENSE"
+                          ? "text-red-800 dark:text-red-900"
+                          : "text-green-800 dark:text-green-900",
+                        !areValuesVisible && "blur-sm",
+                      )}
+                    >
+                      {transaction.type === "EXPENSE" ? "-" : "+"}{" "}
+                      {formatCurrency(transaction.value)}
+                    </span>
+                  </div>
+                ))}
               </>
             )}
           </div>
