@@ -3,14 +3,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { useState } from "react";
 
 import { useDashboard } from "../../components/DashBoardContext/useDashboard";
 import { bankAccountsService } from "../../../../../app/services/bankAccountService";
 import { currencyStringToNumber } from "../../../../../app/utils/currencyStringToNumber";
-import axios from "axios";
 
 const schema = z.object({
-  initialBalance: z.string().nonempty("Saldo inicial é obrigatório"),
+  initialBalance: z.union([
+    z.string().nonempty("Saldo inicial é obrigatório"),
+    z.number(),
+  ]),
   name: z.string().nonempty("Nome da Conta é obrigatório"),
   type: z.enum(["CHECKING", "INVESTMENT", "CASH"]),
   color: z.string().nonempty("Cor é obrigatória"),
@@ -18,8 +22,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function useNewAccountModalController() {
-  const { isNewAccountModalOpen, closeNewAccountModal } = useDashboard();
+export function EditAccountModalController() {
+  const { isEditAccountModalOpen, closeEditAccountModal, accountBeingEdited } =
+    useDashboard();
 
   const {
     register,
@@ -29,32 +34,41 @@ export function useNewAccountModalController() {
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    // defaultValues: {
-    //   name: "",
-    //   initialBalance: "0",
-    //   color: "",
-    //   type: "CHECKING",
-    // },
+    defaultValues: {
+      name: accountBeingEdited?.name ?? "",
+      initialBalance: accountBeingEdited?.initialBalance.toString() ?? "0",
+      color: accountBeingEdited?.color ?? "",
+      type: accountBeingEdited?.type ?? "CHECKING",
+    },
   });
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const queryClient = useQueryClient();
-  const { isPending, mutateAsync } = useMutation({
-    mutationFn: bankAccountsService.create,
+
+  const { isPending, mutateAsync: updateAccount } = useMutation({
+    mutationFn: bankAccountsService.update,
   });
+
+  const { isPending: isLoadingRemove, mutateAsync: removeAccount } =
+    useMutation({
+      mutationFn: bankAccountsService.remove,
+    });
 
   const handleSubmit = hookFormSubmit(
     async (data) => {
       try {
-        await mutateAsync({
+        await updateAccount({
           ...data,
           initialBalance: currencyStringToNumber(data.initialBalance),
+          id: accountBeingEdited!.id,
         });
+
         queryClient.invalidateQueries({ queryKey: ["bankAccounts"] });
-        toast.success("Conta criada com sucesso!");
-        closeNewAccountModal();
+        toast.success("Conta editada com sucesso!");
+        closeEditAccountModal();
         reset();
       } catch (error) {
-        // 👇 log detalhado
         if (axios.isAxiosError(error)) {
           console.error("Status:", error.response?.status);
           console.error("Data:", error.response?.data);
@@ -63,7 +77,7 @@ export function useNewAccountModalController() {
         } else {
           console.error("Erro inesperado:", error);
         }
-        toast.error("Erro ao criar conta!");
+        toast.error("Erro ao editar conta!");
       }
     },
     (errors) => {
@@ -71,13 +85,39 @@ export function useNewAccountModalController() {
     },
   );
 
+  function handleOpenDeleteModal() {
+    setIsDeleteModalOpen(true);
+  }
+
+  function handleCloseDeleteModal() {
+    setIsDeleteModalOpen(false);
+  }
+
+  async function handleDeleteAccount() {
+    try {
+      await removeAccount(accountBeingEdited!.id);
+
+      queryClient.invalidateQueries({ queryKey: ["bankAccounts"] });
+      toast.success("Conta deletada com sucesso!");
+      closeEditAccountModal();
+    } catch {
+      toast.error("Erro ao deletar a conta");
+    }
+  }
+
   return {
-    isNewAccountModalOpen,
-    closeNewAccountModal,
+    isEditAccountModalOpen,
+    closeEditAccountModal,
+    accountBeingEdited,
     register,
     errors,
     handleSubmit,
     control,
     isPending,
+    isLoadingRemove,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    handleDeleteAccount,
   };
 }

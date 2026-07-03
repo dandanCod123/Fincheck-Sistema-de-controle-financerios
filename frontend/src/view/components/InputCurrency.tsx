@@ -3,22 +3,31 @@ import { NumericFormat } from "react-number-format";
 import { cn } from "../../app/utils/cn";
 
 interface InputCurrencyProps {
-  error?: string;
-
-  onChange?(value: string | undefined): void;
-
-  value: number | string;
+  errors?: string;
+  onChange?(value: string): void;
+  value?: number | string;
 }
 
-export function InputCurrency() {
+export function InputCurrency({ errors, onChange, value }: InputCurrencyProps) {
   return (
     <div>
       <NumericFormat
-        className="w-full text-gray-800 text-[32px] font-bold tracking-[-1px] w-full bg-transparent border-none focus:outline-none"
+        className={cn(
+          "text-gray-800 text-[32px] font-bold tracking-[-1px] outline-none w-full dark:bg-gray-700 dark:text-white",
+          errors && "text-red-900",
+        )}
+        onChange={(event) => onChange?.(event.target.value)}
+        value={value}
         thousandSeparator="."
         decimalSeparator=","
         defaultValue="0,00"
       />
+      {errors && (
+        <div className="flex gap-2 items-center mt-2 text-red-600">
+          <CrossCircledIcon />
+          <span className=" text-xs">{errors}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,3 +1,3 @@
 export const localStorageKey = {
-  ACCESS_TOKEN: "fincheck:acessToken",
+  ACCESS_TOKEN: "fincheck:accessToken",
 };

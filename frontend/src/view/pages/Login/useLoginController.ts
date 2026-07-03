@@ -35,8 +35,8 @@ export function useLoginController() {
   const { signin } = useAuth();
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
-      const { acessToken } = await mutateAsync(data);
-      signin(acessToken);
+      const { accessToken } = await mutateAsync(data);
+      signin(accessToken);
       toast.success("login feito com sucesso!");
     } catch {
       toast.error("Ocorreu um erro ao fazer login!");

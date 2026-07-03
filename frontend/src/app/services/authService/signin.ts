@@ -7,7 +7,7 @@ export interface SigninParms {
 }
 
 interface SigninRespose {
-  acessToken: string;
+  accessToken: string;
 }
 
 export async function signin(parms: SigninParms) {
