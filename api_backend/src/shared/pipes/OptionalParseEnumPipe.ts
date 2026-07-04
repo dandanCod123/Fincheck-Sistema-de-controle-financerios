@@ -1,16 +1,11 @@
-import { ArgumentMetadata, ParseEnumPipe, ParseUUIDPipe } from '@nestjs/common';
+import { ArgumentMetadata, ParseEnumPipe } from '@nestjs/common';
 
-export class OptionalParseEnumPipe<T = any> extends ParseEnumPipe {
-  private readonly parseUUIDPipe = new ParseUUIDPipe();
-
-  async transform(
-    value: string | undefined,
-    metadata: ArgumentMetadata,
-  ): Promise<string | undefined> {
+export class OptionalParseEnumPipe extends ParseEnumPipe {
+  async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
     if (typeof value === 'undefined') {
       return undefined;
     }
 
-    return this.parseUUIDPipe.transform(value, metadata);
+    return super.transform(value, metadata);
   }
 }

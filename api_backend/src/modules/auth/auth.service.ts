@@ -35,9 +35,7 @@ export class AuthService {
 
   async signup(signupDto: SignUpDto) {
     const emailExists = await this.usersRepository.findUnique({
-      where: {
-        email: signupDto.email,
-      },
+      where: { email: signupDto.email },
     });
 
     if (emailExists) {
@@ -54,38 +52,26 @@ export class AuthService {
         categories: {
           createMany: {
             data: [
-              //INCOME
-              {
-                name: 'Salario',
-                icon: 'travel',
-                type: 'INCOME',
-              },
-              {
-                name: 'Freelance',
-                icon: 'free-lance',
-                type: 'INCOME',
-              },
-              {
-                name: 'Outro',
-                icon: 'outro',
-                type: 'INCOME',
-              },
-              //EXPENSES
-              {
-                name: 'Casa',
-                icon: 'home',
-                type: 'EXPENSE',
-              },
-              {
-                name: 'Alimentação',
-                icon: 'food',
-                type: 'EXPENSE',
-              },
+              // INCOME
+              { name: 'Salário', icon: 'travel', type: 'INCOME' },
+              { name: 'Freelance', icon: 'freelance', type: 'INCOME' },
+              { name: 'Outro', icon: 'other', type: 'INCOME' },
+              // EXPENSE
+              { name: 'Casa', icon: 'home', type: 'EXPENSE' },
+              { name: 'Alimentação', icon: 'food', type: 'EXPENSE' },
+              { name: 'Educação', icon: 'education', type: 'EXPENSE' },
+              { name: 'Lazer', icon: 'fun', type: 'EXPENSE' },
+              { name: 'Mercado', icon: 'grocery', type: 'EXPENSE' },
+              { name: 'Roupas', icon: 'clothes', type: 'EXPENSE' },
+              { name: 'Transporte', icon: 'transport', type: 'EXPENSE' },
+              { name: 'Viagem', icon: 'travel', type: 'EXPENSE' },
+              { name: 'Outro', icon: 'other', type: 'EXPENSE' },
             ],
           },
         },
       },
     });
+
     return user;
   }
 

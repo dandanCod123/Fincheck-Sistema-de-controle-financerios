@@ -17,6 +17,8 @@ import emptyStateImage from "../../../../../assets/Empty State.svg";
 import { TransactionTypeDropdown } from "./TransactionTypeDropdown";
 import { FiltersModal } from "./FiltersModal";
 import { formatDate } from "../../../../../app/utils/formatDate";
+import { EditAccountModal } from "../../Modals/EditAccountModal";
+import { EditTransactionModal } from "../../Modals/EditTransactionModal";
 
 export function Transactions() {
   const {
@@ -27,6 +29,13 @@ export function Transactions() {
     isFiltersModalOpen,
     handleOpenFiltersModal,
     handleCloseFiltersModal,
+    filters,
+    handleChangeFilters,
+    handleApplyFilters,
+    handleCloseEditTransactionsModal,
+    handleOpenEditTransactionsModal,
+    isEditTransactionsModalOpen,
+    transactionBeingEdited,
   } = useTransactionsController();
 
   const hasTransactions = transactions.length > 0;
@@ -44,17 +53,28 @@ export function Transactions() {
           <FiltersModal
             open={isFiltersModalOpen}
             onClose={handleCloseFiltersModal}
+            onApplyFilters={handleApplyFilters}
           />
           <header>
             <div className="flex items-center justify-between">
-              <TransactionTypeDropdown />
+              <TransactionTypeDropdown
+                onSelect={handleChangeFilters("type")}
+                selectedType={filters.type}
+              />
               <button onClick={handleOpenFiltersModal}>
                 <FilterIcon />
               </button>
             </div>
 
             <div className="mt-6 relative">
-              <Swiper slidesPerView={3} centeredSlides>
+              <Swiper
+                slidesPerView={3}
+                centeredSlides
+                initialSlide={filters.month}
+                onSlideChange={(swiper) => {
+                  handleChangeFilters("month")(swiper.realIndex);
+                }}
+              >
                 <SliderNavigation />
                 {MONTHS.map((month, index) => (
                   <SwiperSlide key={month}>
@@ -92,10 +112,20 @@ export function Transactions() {
 
             {hasTransactions && !isLoading && (
               <>
+                {transactionBeingEdited && (
+                  <EditTransactionModal
+                    isModalOpen={isEditTransactionsModalOpen}
+                    onClose={handleCloseEditTransactionsModal}
+                    transaction={transactionBeingEdited}
+                  />
+                )}
+
                 {transactions.map((transaction) => (
                   <div
                     key={transaction.id}
                     className="bg-white p-4 rounded-2xl flex items-center justify-between gap-4"
+                    role="button"
+                    onClick={() => handleOpenEditTransactionsModal(transaction)}
                   >
                     <div className="flex-1 flex items-center gap-3">
                       <CategoryIcon

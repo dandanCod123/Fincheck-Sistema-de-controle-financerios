@@ -3,8 +3,9 @@ export function currencyStringToNumber(value: string | number) {
     return value;
   }
 
-  // Using RegExp for better browser compatibility. replaceAll is not with good compatibility today.
-  const sanitizedString = value!.replace(/\./g, ",").replace(",", ".");
+  const sanitizedString = value
+    .replace(/\./g, "") // remove separadores de milhar
+    .replace(",", "."); // vírgula decimal → ponto
 
   return Number(sanitizedString);
 }

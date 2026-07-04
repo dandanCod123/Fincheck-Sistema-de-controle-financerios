@@ -3,20 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseUUIDPipe,
   Put,
   Query,
   ParseIntPipe,
-  ParseEnumPipe,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
-import { BankAccountType } from '@prisma/client';
 import { OptionalParseUUIDPipe } from 'src/shared/pipes/OptionalParseUUIDPipe';
 import { TransactionType } from './entities/Transactions';
 import { OptionalParseEnumPipe } from 'src/shared/pipes/OptionalParseEnumPipe';
@@ -42,7 +39,6 @@ export class TransactionsController {
     @Query('type', new OptionalParseEnumPipe(TransactionType))
     type?: TransactionType,
   ) {
-    console.log({ month, year, bankAccountId });
     return this.transactionsService.findAllByUserId(userId, {
       month,
       year,

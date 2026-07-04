@@ -75,6 +75,7 @@ export function useNewTransactionModalController() {
       await mutateAsync(payload); // 👈 use a variável payload aqui
 
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["bankAccounts"] });
       toast.success(
         newTransactionType === "EXPENSE"
           ? "Despesa cadastrada com sucesso!"
