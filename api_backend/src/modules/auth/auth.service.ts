@@ -14,9 +14,11 @@ export class AuthService {
 
   async autheticate(authencateDto: SigninDto) {
     const { email, password } = authencateDto;
+
     const user = await this.usersRepository.findUnique({
       where: { email },
     });
+
     if (!user) {
       throw new UnauthorizedException('Invalid credetials');
     }
@@ -27,10 +29,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    //JWT
     const accessToken = await this.generateAcessToken(user.id);
 
-    return { user, accessToken };
+    return { accessToken };
   }
 
   async signup(signupDto: SignUpDto) {
@@ -72,7 +73,9 @@ export class AuthService {
       },
     });
 
-    return user;
+    const accessToken = await this.generateAcessToken(user.id);
+
+    return { accessToken };
   }
 
   private generateAcessToken(userId: string) {
