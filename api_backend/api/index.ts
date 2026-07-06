@@ -1,19 +1,26 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { ValidationPipe } from '@nestjs/common';
+import express, { Request, Response } from 'express';
 import { AppModule } from '../src/app.module';
-import express from 'express';
+import 'dotenv/config';
 
 const server = express();
-let ready: Promise<void> | null = null;
+let isReady = false;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-  app.enableCors();
-  await app.init();
+  if (!isReady) {
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+    );
+    app.enableCors({ origin: '*' });
+    await app.init();
+    isReady = true;
+  }
 }
 
-export default async function handler(req: any, res: any) {
-  if (!ready) ready = bootstrap();
-  await ready;
+export default async function handler(req: Request, res: Response) {
+  await bootstrap();
   server(req, res);
 }
