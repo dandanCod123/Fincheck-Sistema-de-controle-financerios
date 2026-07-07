@@ -13,10 +13,10 @@ import {
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
-import { OptionalParseUUIDPipe } from 'src/shared/pipes/OptionalParseUUIDPipe';
+import { ActiveUserId } from '../../shared/decorators/ActiveUserId';
+import { OptionalParseUUIDPipe } from '../../shared/pipes/OptionalParseUUIDPipe';
 import { TransactionType } from './entities/Transactions';
-import { OptionalParseEnumPipe } from 'src/shared/pipes/OptionalParseEnumPipe';
+import { OptionalParseEnumPipe } from '../../shared/pipes/OptionalParseEnumPipe';
 
 @Controller('transactions')
 export class TransactionsController {

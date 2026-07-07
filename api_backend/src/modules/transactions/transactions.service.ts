@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositores';
+import { TransactionsRepository } from '../../shared/database/repositories/transactions.repositores';
 import { ValidateBankAccountOwnershipService } from '../bank-accounts/services/validate-bank-account-owership.service';
 import { ValidateCategoryOwnershipService } from '../categories/services/validate-categorie-owership.service';
 import { TransactionType } from './entities/Transactions';

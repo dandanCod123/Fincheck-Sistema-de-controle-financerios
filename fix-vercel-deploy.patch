@@ -1,0 +1,188 @@
+diff --git a/api_backend/prisma/schema.prisma b/api_backend/prisma/schema.prisma
+index ef5b899..4008165 100644
+--- a/api_backend/prisma/schema.prisma
++++ b/api_backend/prisma/schema.prisma
+@@ -2,7 +2,8 @@
+ // learn more about it in the docs: https://pris.ly/d/prisma-schema
+ 
+ generator client {
+-  provider = "prisma-client-js"
++  provider      = "prisma-client-js"
++  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+ }
+ 
+ datasource db {
+diff --git a/api_backend/src/modules/auth/auth.controller.ts b/api_backend/src/modules/auth/auth.controller.ts
+index 9f31a81..4e7660a 100644
+--- a/api_backend/src/modules/auth/auth.controller.ts
++++ b/api_backend/src/modules/auth/auth.controller.ts
+@@ -1,7 +1,7 @@
+ import { Body, Controller, Post, SetMetadata } from '@nestjs/common';
+ import { AuthService } from './auth.service';
+ import { SignUpDto } from './dto/signup';
+-import { IsPublic } from 'src/shared/decorators/IsPublic';
++import { IsPublic } from '../../shared/decorators/IsPublic';
+ import { SigninDto } from './dto/signin';
+ 
+ @Controller('auth')
+diff --git a/api_backend/src/modules/auth/auth.guard.ts b/api_backend/src/modules/auth/auth.guard.ts
+index c7de0ec..e3517f3 100644
+--- a/api_backend/src/modules/auth/auth.guard.ts
++++ b/api_backend/src/modules/auth/auth.guard.ts
+@@ -7,7 +7,7 @@ import {
+ import { JwtService } from '@nestjs/jwt';
+ import { Reflector } from '@nestjs/core';
+ import { Request } from 'express';
+-import { IS_PUBLIC_KEY } from 'src/shared/decorators/IsPublic';
++import { IS_PUBLIC_KEY } from '../../shared/decorators/IsPublic';
+ 
+ @Injectable()
+ export class AuthGuard implements CanActivate {
+diff --git a/api_backend/src/modules/auth/auth.module.ts b/api_backend/src/modules/auth/auth.module.ts
+index 69ace16..a173e74 100644
+--- a/api_backend/src/modules/auth/auth.module.ts
++++ b/api_backend/src/modules/auth/auth.module.ts
+@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
+ import { AuthService } from './auth.service';
+ import { AuthController } from './auth.controller';
+ import { JwtModule } from '@nestjs/jwt';
+-import { env } from 'src/shared/config/env';
++import { env } from '../../shared/config/env';
+ 
+ @Module({
+   imports: [
+diff --git a/api_backend/src/modules/auth/auth.service.ts b/api_backend/src/modules/auth/auth.service.ts
+index 2a47032..baa85d3 100644
+--- a/api_backend/src/modules/auth/auth.service.ts
++++ b/api_backend/src/modules/auth/auth.service.ts
+@@ -1,6 +1,6 @@
+ import { Injectable, UnauthorizedException } from '@nestjs/common';
+ import { SigninDto } from './dto/signin';
+-import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
++import { UsersRepository } from '../../shared/database/repositories/users.repositories';
+ import { compare, hash } from 'bcryptjs';
+ import { JwtService } from '@nestjs/jwt';
+ import { SignUpDto } from './dto/signup';
+diff --git a/api_backend/src/modules/bank-accounts/bank-accounts.controller.ts b/api_backend/src/modules/bank-accounts/bank-accounts.controller.ts
+index 4cbad97..8968eba 100644
+--- a/api_backend/src/modules/bank-accounts/bank-accounts.controller.ts
++++ b/api_backend/src/modules/bank-accounts/bank-accounts.controller.ts
+@@ -14,7 +14,7 @@ import {
+ import { BankAccountsService } from './services/bank-accounts.service';
+ import { CreateBankAccountDto } from './dto/create-bank-account.dto';
+ import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
+-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
++import { ActiveUserId } from '../../shared/decorators/ActiveUserId';
+ 
+ @Controller('bank-accounts')
+ export class BankAccountsController {
+diff --git a/api_backend/src/modules/categories/categories.controller.ts b/api_backend/src/modules/categories/categories.controller.ts
+index d1f327c..fc059ad 100644
+--- a/api_backend/src/modules/categories/categories.controller.ts
++++ b/api_backend/src/modules/categories/categories.controller.ts
+@@ -1,7 +1,7 @@
+ import { Controller, Get } from '@nestjs/common';
+ import { CategoriesService } from './services/categories.service';
+ 
+-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
++import { ActiveUserId } from '../../shared/decorators/ActiveUserId';
+ 
+ @Controller('categories')
+ export class CategoriesController {
+diff --git a/api_backend/src/modules/categories/services/categories.service.ts b/api_backend/src/modules/categories/services/categories.service.ts
+index 4b26850..bae759a 100644
+--- a/api_backend/src/modules/categories/services/categories.service.ts
++++ b/api_backend/src/modules/categories/services/categories.service.ts
+@@ -1,7 +1,7 @@
+ import { Injectable } from '@nestjs/common';
+ import { CreateCategoryDto } from '../dto/create-category.dto';
+ import { UpdateCategoryDto } from '../dto/update-category.dto';
+-import { CategoriesRepository } from 'src/shared/database/repositories/categories.repositories';
++import { CategoriesRepository } from '../../../shared/database/repositories/categories.repositories';
+ 
+ @Injectable()
+ export class CategoriesService {
+diff --git a/api_backend/src/modules/transactions/transactions.controller.ts b/api_backend/src/modules/transactions/transactions.controller.ts
+index 5ea8dbe..bb631cb 100644
+--- a/api_backend/src/modules/transactions/transactions.controller.ts
++++ b/api_backend/src/modules/transactions/transactions.controller.ts
+@@ -13,10 +13,10 @@ import {
+ import { TransactionsService } from './transactions.service';
+ import { CreateTransactionDto } from './dto/create-transaction.dto';
+ import { UpdateTransactionDto } from './dto/update-transaction.dto';
+-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+-import { OptionalParseUUIDPipe } from 'src/shared/pipes/OptionalParseUUIDPipe';
++import { ActiveUserId } from '../../shared/decorators/ActiveUserId';
++import { OptionalParseUUIDPipe } from '../../shared/pipes/OptionalParseUUIDPipe';
+ import { TransactionType } from './entities/Transactions';
+-import { OptionalParseEnumPipe } from 'src/shared/pipes/OptionalParseEnumPipe';
++import { OptionalParseEnumPipe } from '../../shared/pipes/OptionalParseEnumPipe';
+ 
+ @Controller('transactions')
+ export class TransactionsController {
+diff --git a/api_backend/src/modules/transactions/transactions.service.ts b/api_backend/src/modules/transactions/transactions.service.ts
+index baccfc9..4364b9c 100644
+--- a/api_backend/src/modules/transactions/transactions.service.ts
++++ b/api_backend/src/modules/transactions/transactions.service.ts
+@@ -1,7 +1,7 @@
+ import { Injectable } from '@nestjs/common';
+ import { CreateTransactionDto } from './dto/create-transaction.dto';
+ import { UpdateTransactionDto } from './dto/update-transaction.dto';
+-import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositores';
++import { TransactionsRepository } from '../../shared/database/repositories/transactions.repositores';
+ import { ValidateBankAccountOwnershipService } from '../bank-accounts/services/validate-bank-account-owership.service';
+ import { ValidateCategoryOwnershipService } from '../categories/services/validate-categorie-owership.service';
+ import { TransactionType } from './entities/Transactions';
+diff --git a/api_backend/src/modules/users/users.controller.ts b/api_backend/src/modules/users/users.controller.ts
+index 1f34e1b..78fe48a 100644
+--- a/api_backend/src/modules/users/users.controller.ts
++++ b/api_backend/src/modules/users/users.controller.ts
+@@ -1,7 +1,7 @@
+ // src/modules/users/users.controller.ts
+ import { Controller, Get } from '@nestjs/common';
+ import { UsersService } from './users.service';
+-import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
++import { ActiveUserId } from '../../shared/decorators/ActiveUserId';
+ 
+ @Controller('users')
+ export class UsersController {
+diff --git a/api_backend/src/modules/users/users.module.ts b/api_backend/src/modules/users/users.module.ts
+index ec167cb..614ec67 100644
+--- a/api_backend/src/modules/users/users.module.ts
++++ b/api_backend/src/modules/users/users.module.ts
+@@ -1,8 +1,8 @@
+ import { Module } from '@nestjs/common';
+ import { UsersService } from './users.service';
+ import { UsersController } from './users.controller';
+-import { PrismaService } from 'src/shared/database/prisma.service';
+-import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
++import { PrismaService } from '../../shared/database/prisma.service';
++import { UsersRepository } from '../../shared/database/repositories/users.repositories';
+ 
+ @Module({
+   controllers: [UsersController],
+diff --git a/api_backend/src/modules/users/users.service.ts b/api_backend/src/modules/users/users.service.ts
+index 36f8754..a875dee 100644
+--- a/api_backend/src/modules/users/users.service.ts
++++ b/api_backend/src/modules/users/users.service.ts
+@@ -1,5 +1,5 @@
+ import { Injectable } from '@nestjs/common';
+-import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
++import { UsersRepository } from '../../shared/database/repositories/users.repositories';
+ 
+ @Injectable()
+ export class UsersService {
+diff --git a/api_backend/tsconfig.json b/api_backend/tsconfig.json
+index cb2056f..a254991 100644
+--- a/api_backend/tsconfig.json
++++ b/api_backend/tsconfig.json
+@@ -12,6 +12,9 @@
+     "sourceMap": true,
+     "outDir": "./dist",
+     "baseUrl": "./",
++    "paths": {
++      "src/*": ["src/*"]
++    },
+     "incremental": true,
+     "skipLibCheck": true,
+     "strictNullChecks": true,
